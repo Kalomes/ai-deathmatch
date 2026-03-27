@@ -1,0 +1,44 @@
+{
+  "battles": [
+    {
+      "id": 1774422254075,
+      "coin": "SUI",
+      "topic": "SUI will be top 3 crypto by market cap",
+      "timestamp": "2026-03-25T07:04:14.075Z",
+      "fighter1": {
+        "model": "google/gemini-2.0-flash-001",
+        "name": "Gemini 2.0 Flash",
+        "stance": "BULL",
+        "text": "[Connection error: Cannot convert argument to a ByteString because the character at index 16 has a value of 1042 which is greater than 255.]"
+      },
+      "fighter2": {
+        "model": "anthropic/claude-3-5-haiku",
+        "name": "Claude 3.5 Haiku",
+        "stance": "BEAR",
+        "text": "[Connection error: Cannot convert argument to a ByteString because the character at index 16 has a value of 1042 which is greater than 255.]"
+      },
+      "winner": null
+    },
+    {
+      "id": 1774422194071,
+      "coin": "BNB",
+      "topic": "BNB will 10x by end of 2026",
+      "timestamp": "2026-03-25T07:03:14.071Z",
+      "fighter1": {
+        "model": "google/gemini-2.0-flash-001",
+        "name": "Gemini 2.0 Flash",
+        "stance": "BULL",
+        "text": "[Connection error: Cannot convert argument to a ByteString because the character at index 16 has a value of 1042 which is greater than 255.]"
+      },
+      "fighter2": {
+        "model": "anthropic/claude-3-5-haiku",
+        "name": "Claude 3.5 Haiku",
+        "stance": "BEAR",
+        "text": "[Connection error: Cannot convert argument to a ByteString because the character at index 16 has a value of 1042 which is greater than 255.]"
+      },
+      "winner": null
+    }
+  ],
+  "scores": {},
+  "totalBattles": 2
+}

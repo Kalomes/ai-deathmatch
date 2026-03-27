@@ -1,0 +1,11 @@
+{
+  "name": "ai-deathmatch",
+  "version": "3.0.0",
+  "type": "module",
+  "engines": { "node": "24.x" },
+  "dependencies": {
+  "@buidlrrr/rain-sdk": "latest",
+  "ethers": "^6.0.0",
+    "viem": "^2.21.54"
+  }
+}

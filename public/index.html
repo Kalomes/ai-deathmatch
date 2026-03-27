@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Prediction Deathmatch</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0a;color:#fff;font-family:'Courier New',monospace;min-height:100vh}
+.header{text-align:center;padding:24px 20px 12px;border-bottom:1px solid #1a1a1a}
+.header h1{font-size:clamp(1.2rem,3.5vw,2rem);letter-spacing:.2em}
+.header h1 span{color:#a855f7}
+.header p{color:#333;font-size:.65rem;letter-spacing:.15em;margin-top:4px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:8px 20px;border-bottom:1px solid #111;font-size:.65rem}
+.topbar-left{color:#444;line-height:1.6}
+.topbar-center{color:#888;font-size:.8rem;text-align:center;flex:1;padding:0 12px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.timer{font-size:1.2rem;font-weight:bold;color:#fff;font-family:'Courier New',monospace}
+.connect-btn{background:transparent;border:1px solid #a855f7;color:#a855f7;padding:5px 12px;font-family:inherit;font-size:.65rem;cursor:pointer;letter-spacing:.05em;border-radius:3px}
+.connect-btn:hover{background:#a855f720}
+.scoreboard{display:flex;justify-content:center;align-items:center;gap:24px;padding:12px;border-bottom:1px solid #111}
+.score-item{text-align:center}
+.score-num{font-size:1.6rem;font-weight:bold}
+.score-label{font-size:.55rem;color:#444;letter-spacing:.1em;margin-top:2px}
+.vs-sep{color:#222;font-size:.9rem}
+.arena{display:grid;grid-template-columns:1fr 36px 1fr;max-width:1200px;margin:0 auto;padding:12px 16px}
+.bot-card{border:1px solid #222;border-radius:4px;overflow:hidden}
+.bot-card.c1{border-color:#00ff8830}
+.bot-card.c2{border-color:#ff444430}
+.bot-head{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px;background:#0d0d0d}
+.bot-name{font-size:.85rem;font-weight:bold;letter-spacing:.06em}
+.bot-val{text-align:right}
+.bot-val-num{font-size:1.2rem;font-weight:bold}
+.bot-val-pnl{font-size:.7rem;margin-top:1px}
+.bot-strat{padding:8px 14px;font-size:.68rem;color:#666;font-style:italic;border-bottom:1px solid #111;min-height:32px}
+.act-toggle{font-size:.58rem;color:#333;padding:3px 14px;cursor:pointer;border-top:1px solid #0f0f0f}
+.act-toggle:hover{color:#666}
+.act-log{display:none;padding:4px 14px 8px;max-height:90px;overflow-y:auto}
+.act-log.open{display:block}
+.act-item{font-size:.6rem;padding:2px 0;color:#555}
+.act-item.buy{color:#00aa44}
+.act-item.sell{color:#ff5555}
+table{width:100%;border-collapse:collapse;font-size:.62rem}
+th{color:#333;text-align:left;padding:5px 8px;border-bottom:1px solid #111;letter-spacing:.04em}
+td{padding:4px 8px;border-bottom:1px solid #0c0c0c;color:#888}
+tr:last-child td{border-bottom:none}
+.vs-mid{display:flex;align-items:center;justify-content:center;color:#222;font-size:1rem}
+.winbar-wrap{max-width:1200px;margin:0 auto;padding:0 16px 6px}
+.winbar-labels{display:flex;justify-content:space-between;font-size:.6rem;margin-bottom:3px}
+.winbar{height:5px;background:#111;border-radius:3px;overflow:hidden;display:flex}
+.winbar-a{height:100%;background:#00ff88;transition:width .6s}
+.winbar-b{height:100%;background:#ff4444;flex:1}
+.src-badge{text-align:center;font-size:.6rem;padding:3px;color:#333}
+.betting{max-width:1200px;margin:0 auto;padding:10px 16px;border-top:1px solid #111}
+.betting-title{font-size:.6rem;color:#333;letter-spacing:.1em;margin-bottom:10px}
+.bet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bet-box{border:1px solid #1a1a1a;border-radius:3px;padding:10px}
+.bet-label{font-size:.72rem;font-weight:bold;letter-spacing:.04em;margin-bottom:2px}
+.bet-sub{font-size:.58rem;color:#333;margin-bottom:7px}
+.bet-row{display:flex;gap:5px}
+.bet-input{flex:1;background:#0d0d0d;border:1px solid #1a1a1a;color:#fff;padding:7px 9px;font-family:inherit;font-size:.75rem;border-radius:3px;outline:none}
+.bet-input:focus{border-color:#333}
+.bet-btn{padding:7px 14px;font-family:inherit;font-size:.7rem;font-weight:bold;cursor:pointer;border:none;border-radius:3px;letter-spacing:.04em}
+.bet-btn:disabled{opacity:.3;cursor:default}
+.btn-g{background:#00ff88;color:#000}
+.btn-r{background:#ff4444;color:#fff}
+.history{max-width:1200px;margin:0 auto;padding:10px 16px;border-top:1px solid #111}
+.history-title{font-size:.6rem;color:#333;letter-spacing:.1em;margin-bottom:8px}
+.h-item{display:flex;gap:8px;align-items:center;font-size:.65rem;padding:4px 0;border-bottom:1px solid #0d0d0d;flex-wrap:wrap;color:#555}
+.h-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.footer{text-align:center;padding:16px;border-top:1px solid #0d0d0d;display:flex;align-items:center;justify-content:center;gap:16px}
+.s-link{display:flex;align-items:center;gap:5px;color:#2a2a2a;text-decoration:none;font-size:.6rem;letter-spacing:.04em;transition:color .2s}
+.s-link:hover{color:#666}
+.s-link svg{width:13px;height:13px;fill:currentColor}
+/* winner overlay */
+.overlay{display:none;position:fixed;inset:0;background:#000c;z-index:100;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.overlay-box{background:#0f0f0f;border:1px solid #2a2a2a;border-radius:6px;padding:28px 44px;text-align:center}
+.ov-trophy{font-size:2.6rem}
+.ov-label{font-size:.6rem;color:#444;letter-spacing:.15em;margin:8px 0 4px}
+.ov-name{font-size:1.6rem;font-weight:bold;letter-spacing:.08em}
+.ov-score{font-size:.7rem;color:#444;margin-top:6px}
+.ov-pnl{font-size:.7rem;margin-top:3px}
+.ov-skip{margin-top:16px;font-size:.6rem;color:#333;cursor:pointer;letter-spacing:.08em}
+.ov-skip:hover{color:#666}
+canvas#fw{position:fixed;inset:0;pointer-events:none;z-index:99}
+/* leverage badge */
+.lev{display:inline-block;background:#ff6b0022;color:#ff6b00;font-size:.55rem;padding:1px 4px;border-radius:2px;margin-left:3px}
+@media(max-width:680px){.arena{grid-template-columns:1fr}.vs-mid{display:none}.bet-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>✕ AI PREDICTION <span>DEATHMATCH</span></h1>
+  <p>TWO AI AGENTS TRADING REAL PREDICTION MARKETS · BUILT ON RAIN PROTOCOL</p>
+</div>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div style="color:#333">SESSION 1</div>
+    <div id="roundLabel" style="color:#555">ROUND #--</div>
+  </div>
+  <div class="topbar-center" id="matchupLabel">LOADING...</div>
+  <div class="topbar-right">
+    <div style="text-align:right">
+      <div style="font-size:.55rem;color:#333">NEXT START</div>
+      <div class="timer" id="timer">--:--</div>
+    </div>
+    <button class="connect-btn" id="connectBtn" onclick="connectWallet()">CONNECT</button>
+  </div>
+</div>
+
+<div class="scoreboard">
+  <div class="score-item">
+    <div class="score-num" id="score1" style="color:#00ff88">0</div>
+    <div class="score-label">AI-1 WINS</div>
+  </div>
+  <div class="vs-sep">VS</div>
+  <div class="score-item">
+    <div class="score-num" id="score2" style="color:#ff4444">0</div>
+    <div class="score-label">AI-2 WINS</div>
+  </div>
+  <div class="vs-sep">·</div>
+  <div class="score-item">
+    <div class="score-num" id="totalRounds" style="color:#888">0</div>
+    <div class="score-label">TOTAL ROUNDS</div>
+  </div>
+</div>
+
+<div class="arena">
+  <div class="bot-card c1">
+    <div class="bot-head">
+      <div class="bot-name" id="name1" style="color:#00ff88">AI-1</div>
+      <div class="bot-val">
+        <div class="bot-val-num" id="val1" style="color:#00ff88">$1000.00</div>
+        <div class="bot-val-pnl" id="pnl1" style="color:#444">+$0.00</div>
+      </div>
+    </div>
+    <div class="bot-strat" id="strat1">Loading strategy...</div>
+    <table><thead><tr><th>MARKET</th><th>OPT</th><th>ENTRY</th><th>NOW</th><th>ALLOC</th><th>PNL</th></tr></thead>
+    <tbody id="pos1"></tbody></table>
+    <div class="act-toggle" onclick="toggleAct('actlog1','acttxt1')">▶ <span id="acttxt1">SHOW ACTIVITY</span></div>
+    <div class="act-log" id="actlog1"></div>
+  </div>
+
+  <div class="vs-mid">VS</div>
+
+  <div class="bot-card c2">
+    <div class="bot-head">
+      <div class="bot-name" id="name2" style="color:#ff4444">AI-2</div>
+      <div class="bot-val">
+        <div class="bot-val-num" id="val2" style="color:#ff4444">$1000.00</div>
+        <div class="bot-val-pnl" id="pnl2" style="color:#444">+$0.00</div>
+      </div>
+    </div>
+    <div class="bot-strat" id="strat2">Loading strategy...</div>
+    <table><thead><tr><th>MARKET</th><th>OPT</th><th>ENTRY</th><th>NOW</th><th>ALLOC</th><th>PNL</th></tr></thead>
+    <tbody id="pos2"></tbody></table>
+    <div class="act-toggle" onclick="toggleAct('actlog2','acttxt2')">▶ <span id="acttxt2">SHOW ACTIVITY</span></div>
+    <div class="act-log" id="actlog2"></div>
+  </div>
+</div>
+
+<div class="winbar-wrap">
+  <div class="winbar-labels">
+    <span id="wlabel1" style="color:#00ff88">AI-1 50%</span>
+    <span id="wlabel2" style="color:#ff4444">50% AI-2</span>
+  </div>
+  <div class="winbar"><div class="winbar-a" id="wbar1" style="width:50%"></div><div class="winbar-b"></div></div>
+</div>
+<div class="src-badge" id="srcBadge">⚪ SIMULATED DATA</div>
+
+<div class="betting">
+  <div class="betting-title">◈ PLACE YOUR BET — RAIN PROTOCOL</div>
+  <div style="font-size:.6rem;color:#222;margin-bottom:8px">Connect wallet to place bets with real USDT on Arbitrum</div>
+  <div class="bet-grid">
+    <div class="bet-box">
+      <div class="bet-label" id="betlabel1" style="color:#00ff88">BET ON AI-1</div>
+      <div class="bet-sub" id="betsub1">SUPPORT AI-1</div>
+      <div class="bet-row">
+        <input class="bet-input" id="betamt1" type="number" placeholder="USDT amount">
+        <button class="bet-btn btn-g" id="betbtn1" onclick="placeBet('ai1')">BET</button>
+      </div>
+    </div>
+    <div class="bet-box">
+      <div class="bet-label" id="betlabel2" style="color:#ff4444">BET ON AI-2</div>
+      <div class="bet-sub" id="betsub2">SUPPORT AI-2</div>
+      <div class="bet-row">
+        <input class="bet-input" id="betamt2" type="number" placeholder="USDT amount">
+        <button class="bet-btn btn-r" id="betbtn2" onclick="placeBet('ai2')">BET</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="history">
+  <div class="history-title">◈ RECENT ROUNDS</div>
+  <div id="histList"><div style="color:#222;font-size:.65rem">No history yet</div></div>
+</div>
+
+<div class="footer">
+  <a class="s-link" href="https://x.com/0xWeedpack" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    @0xWeedpack
+  </a>
+  <span style="color:#111">·</span>
+  <a class="s-link" href="https://t.me/JonnyPerkins2003" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    Telegram
+  </a>
+  <span style="color:#111;font-size:.5rem">built with groq + polymarket</span>
+</div>
+
+<canvas id="fw"></canvas>
+<div class="overlay" id="overlay">
+  <div class="overlay-box">
+    <div class="ov-trophy">🏆</div>
+    <div class="ov-label">ROUND WINNER</div>
+    <div class="ov-name" id="ovName">—</div>
+    <div class="ov-score" id="ovScore"></div>
+    <div class="ov-pnl" id="ovPnl"></div>
+    <div class="ov-skip" onclick="closeOverlay()">[  NEXT ROUND STARTING...  ]</div>
+  </div>
+</div>
+
+<script>
+var walletAddr  = null;
+var curRound    = null;
+var fwAnim      = null;
+var timerIval   = null;
+var prevRoundId = null;
+
+// ── FETCH ──────────────────────────────────────────────────
+function fetchState() {
+  fetch('/api/state')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d.round) {
+        curRound = d.round;
+        renderAll(d);
+      }
+    })
+    .catch(function(e){ console.error('fetch error:', e); });
+}
+
+// ── RENDER ALL ─────────────────────────────────────────────
+function renderAll(d) {
+  var r = d.round;
+  var s = d.scores  || {ai1:0, ai2:0, rounds:0};
+  var h = d.history || [];
+
+  // Scores
+  setText('score1',      s.ai1    || 0);
+  setText('score2',      s.ai2    || 0);
+  setText('totalRounds', s.rounds || 0);
+  setText('roundLabel',  'ROUND #' + (r.round_num || '--'));
+  setText('matchupLabel', r.matchup || '');
+
+  // Source
+  var sb = document.getElementById('srcBadge');
+  if (r.data_source === 'polymarket') {
+    sb.textContent = '🟢 POLYMARKET LIVE — ' + (r.markets_count||0) + ' MARKETS';
+    sb.style.color = '#22c55e';
+  } else {
+    sb.textContent = '⚪ SIMULATED DATA';
+    sb.style.color = '#333';
+  }
+
+  // Bots
+  renderBot('1', r.ai1, '#00ff88');
+  renderBot('2', r.ai2, '#ff4444');
+
+  // Win bar
+  var v1 = (r.ai1 && r.ai1.portfolioValue) ? r.ai1.portfolioValue : 1000;
+  var v2 = (r.ai2 && r.ai2.portfolioValue) ? r.ai2.portfolioValue : 1000;
+  var pct1 = ((v1 / (v1+v2)) * 100).toFixed(1);
+  var pct2 = (100 - parseFloat(pct1)).toFixed(1);
+  setStyle('wbar1', 'width', pct1 + '%');
+  setText('wlabel1', (r.ai1 ? r.ai1.name.split(' ')[0] : 'AI-1') + ' ' + pct1 + '%');
+  setText('wlabel2', pct2 + '% ' + (r.ai2 ? r.ai2.name.split(' ')[0] : 'AI-2'));
+
+  // Bet labels
+  if (r.ai1) {
+    setText('betlabel1', 'BET ON ' + r.ai1.name);
+    setText('betsub1',   'SUPPORT ' + r.ai1.name);
+  }
+  if (r.ai2) {
+    setText('betlabel2', 'BET ON ' + r.ai2.name);
+    setText('betsub2',   'SUPPORT ' + r.ai2.name);
+  }
+
+  // History
+  renderHistory(h);
+}
+
+// ── RENDER BOT ─────────────────────────────────────────────
+function renderBot(num, ai, defColor) {
+  if (!ai) return;
+  var color = ai.color || defColor;
+  var nameEl = document.getElementById('name'+num);
+  var valEl  = document.getElementById('val'+num);
+  var pnlEl  = document.getElementById('pnl'+num);
+  var stratEl= document.getElementById('strat'+num);
+  var tbody  = document.getElementById('pos'+num);
+
+  if (nameEl) { nameEl.textContent = ai.name || ('AI-'+num); nameEl.style.color = color; }
+  if (valEl)  { valEl.textContent  = '$' + ((ai.portfolioValue||1000).toFixed(2)); valEl.style.color = color; }
+  if (pnlEl) {
+    var pnl = ai.totalPnL || 0;
+    pnlEl.textContent = (pnl>=0?'+':''  )+'$'+pnl.toFixed(2);
+    pnlEl.style.color = pnl>=0 ? '#00ff88' : '#ff4444';
+  }
+  if (stratEl) stratEl.textContent = '"' + (ai.strategy||'...') + '"';
+
+  if (!tbody) return;
+  var positions = ai.positions || [];
+  if (!positions.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:#222;text-align:center;padding:10px">No positions</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = positions.map(function(p) {
+    var pnlColor = (p.pnl||0) >= 0 ? '#00ff88' : '#ff4444';
+    var pnlStr   = ((p.pnl||0)>=0?'+':'') + '$' + (p.pnl||0).toFixed(2);
+    var title    = (p.marketTitle||'?');
+    var shortTitle = title.length > 28 ? title.slice(0,26)+'..' : title;
+    var levBadge = (p.leverage && p.leverage > 1) ? '<span class="lev">'+p.leverage+'x</span>' : '';
+    var entry    = Math.round((p.entryPrice||0)*100);
+    var now      = Math.round((p.currentPrice||0)*100);
+    return '<tr>' +
+      '<td style="color:#666" title="'+title+'">'+shortTitle+'</td>' +
+      '<td style="color:#ccc">'+levBadge+(p.optionName||'?')+'</td>' +
+      '<td style="color:#444">'+entry+'¢</td>' +
+      '<td style="color:#99bbff">'+now+'¢</td>' +
+      '<td style="color:#666">$'+(p.allocation||0)+'</td>' +
+      '<td style="color:'+pnlColor+'">'+pnlStr+'</td>' +
+      '</tr>';
+  }).join('');
+}
+
+// ── RENDER HISTORY ─────────────────────────────────────────
+function renderHistory(history) {
+  var el = document.getElementById('histList');
+  if (!el) return;
+  if (!history || !history.length) {
+    el.innerHTML = '<div style="color:#222;font-size:.65rem">No history yet</div>';
+    return;
+  }
+  el.innerHTML = history.slice(0,10).map(function(h) {
+    var winner  = h.winner===1 ? h.ai1_name : h.ai2_name;
+    var dot     = h.source==='polymarket' ? '#22c55e' : '#333';
+    var time    = h.settled_at ? new Date(h.settled_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+    var v1col   = h.winner===1 ? '#00ff88' : '#555';
+    var v2col   = h.winner===2 ? '#00ff88' : '#555';
+    return '<div class="h-item">' +
+      '<div class="h-dot" style="background:'+dot+'"></div>' +
+      '<span style="color:#333">#'+h.round_num+'</span>' +
+      '<span style="color:#222">'+time+'</span>' +
+      '<span>'+h.ai1_name+' <span style="color:'+v1col+'">$'+h.ai1_value+'</span>' +
+      ' vs '+h.ai2_name+' <span style="color:'+v2col+'">$'+h.ai2_value+'</span></span>' +
+      '<span style="color:#c0a000">🏆 '+winner+'</span>' +
+      '</div>';
+  }).join('');
+}
+
+// ── TIMER ──────────────────────────────────────────────────
+function tickTimer() {
+  if (!curRound || !curRound.ends_at) return;
+
+  var left = Math.max(0, Math.floor((new Date(curRound.ends_at) - Date.now()) / 1000));
+  var m = Math.floor(left / 60), s = left % 60;
+  setText('timer', (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s);
+
+  // ✅ New round detected → re-enable buttons
+  if (prevRoundId && prevRoundId !== curRound.id) {
+    ['betbtn1', 'betbtn2'].forEach(function(id) {
+      var b = document.getElementById(id);
+      if (b) { b.disabled = false; b.textContent = 'BET'; }
+    });
+  }
+  prevRoundId = curRound.id;
+
+  // ✅ Close bets only last 5 seconds
+  if (left <= 5) {
+    ['betbtn1', 'betbtn2'].forEach(function(id) {
+      var b = document.getElementById(id);
+      if (b && !b.disabled) { b.disabled = true; b.textContent = 'CLOSED'; }
+    });
+  }
+
+  // Show winner overlay at 0
+  if (left === 0 && curRound) {
+    var key = 'winner_' + curRound.id;
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, '1');
+      showWinner(curRound);
+      setTimeout(function() { closeOverlay(); }, 7000);
+    }
+  }
+}
+
+
+// ── WINNER ─────────────────────────────────────────────────
+function showWinner(r) {
+  if (!r.ai1 || !r.ai2) return;
+  var v1 = r.ai1.portfolioValue || 1000;
+  var v2 = r.ai2.portfolioValue || 1000;
+  var w  = v1 >= v2 ? r.ai1 : r.ai2;
+  var lo = v1 >= v2 ? r.ai2 : r.ai1;
+  var wv = v1 >= v2 ? v1 : v2;
+  var lv = v1 >= v2 ? v2 : v1;
+
+  setText('ovName',  w.name);
+  setText('ovScore', '$'+wv.toFixed(2)+' vs $'+lv.toFixed(2));
+  var pnl = w.totalPnL || 0;
+  var ovPnlEl = document.getElementById('ovPnl');
+  if (ovPnlEl) {
+    ovPnlEl.textContent = 'PnL: ' + (pnl>=0?'+':'') + '$' + pnl.toFixed(2);
+    ovPnlEl.style.color = pnl>=0 ? '#00ff88' : '#ff4444';
+  }
+  var nameEl = document.getElementById('ovName');
+  if (nameEl) nameEl.style.color = w.color || '#ffd700';
+
+  document.getElementById('overlay').classList.add('show');
+  startFW(w.color || '#ffd700');
+}
+
+function closeOverlay() {
+  document.getElementById('overlay').classList.remove('show');
+  stopFW();
+}
+
+// ── ACTIVITY LOG ───────────────────────────────────────────
+function toggleAct(logId, txtId) {
+  var el  = document.getElementById(logId);
+  var txt = document.getElementById(txtId);
+  if (!el) return;
+  var open = el.classList.toggle('open');
+  if (txt) txt.textContent = open ? 'HIDE ACTIVITY' : 'SHOW ACTIVITY';
+}
+
+// ── FIREWORKS ──────────────────────────────────────────────
+function startFW(color) {
+  var cv = document.getElementById('fw');
+  var cx = cv.getContext('2d');
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+  var pts = [];
+  for (var i=0;i<100;i++) {
+    pts.push({
+      x: cv.width*(0.2+Math.random()*0.6),
+      y: cv.height*(0.1+Math.random()*0.4),
+      vx:(Math.random()-.5)*7, vy:(Math.random()-.5)*7-3,
+      life:1, dec:0.012+Math.random()*.01,
+      sz:2+Math.random()*3,
+      col:[color,'#ffd700','#ffffff','#a855f7'][Math.floor(Math.random()*4)]
+    });
+  }
+  function draw(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=p.dec;
+      cx.globalAlpha=Math.max(0,p.life);
+      cx.fillStyle=p.col;
+      cx.beginPath(); cx.arc(p.x,p.y,p.sz,0,Math.PI*2); cx.fill();
+    });
+    cx.globalAlpha=1;
+    pts=pts.filter(function(p){return p.life>0;});
+    if(pts.length>0) fwAnim=requestAnimationFrame(draw);
+  }
+  draw();
+}
+function stopFW(){
+  if(fwAnim) cancelAnimationFrame(fwAnim);
+  var cv=document.getElementById('fw');
+  cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
+}
+
+// ── WALLET ─────────────────────────────────────────────────
+function connectWallet() {
+  try {
+    var eth = window.ethereum;
+    if (!eth) { alert('Install MetaMask'); return; }
+    eth.request({method:'eth_requestAccounts'})
+      .then(function(acc){
+        if(!acc||!acc.length) return;
+        walletAddr = acc[0];
+        var btn = document.getElementById('connectBtn');
+        if(btn) btn.textContent = walletAddr.slice(0,6)+'...'+walletAddr.slice(-4);
+      })
+      .catch(function(e){ console.log('wallet:', e.message); });
+  } catch(e) { console.log('wallet conflict:', e.message); }
+}
+
+function placeBet(side) {
+  if (!walletAddr) { alert('Connect wallet first'); return; }
+  var amt = document.getElementById(side==='ai1'?'betamt1':'betamt2').value;
+  if (!amt || parseFloat(amt)<=0) { alert('Enter amount'); return; }
+  if (!curRound || !curRound.bettingMarketAddress) {
+    alert('Rain betting not yet configured');
+    return;
+  }
+}
+
+// ── HELPERS ────────────────────────────────────────────────
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setStyle(id, prop, val) {
+  var el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+
+// ── INIT ───────────────────────────────────────────────────
+fetchState();
+setInterval(fetchState, 15000);
+timerIval = setInterval(tickTimer, 1000);
+</script>
+</body>
+</html>

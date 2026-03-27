@@ -1,0 +1,202 @@
+{
+  "phase": "live",
+  "battleCount": 16,
+  "timestamp": "2026-03-24T11:33:21.023Z",
+  "prices": {
+    "BTC": 71099.99,
+    "ETH": 2165.11,
+    "SOL": 91.55,
+    "BNB": 637.54,
+    "DOGE": 0.09412,
+    "XRP": 1.4208,
+    "PEPE": 0.00000342,
+    "AVAX": 9.54
+  },
+  "agents": {
+    "DegenGPT": {
+      "pnl": 992.57,
+      "change": -7.43,
+      "thought": "Degen mode: 3 altcoins, max risk max reward",
+      "positions": [
+        {
+          "coin": "EUR",
+          "direction": "long",
+          "leverage": 25,
+          "margin": 400,
+          "entryPrice": 1.1594,
+          "notional": 10000,
+          "currentPrice": 1.1594,
+          "pnl": 0,
+          "pnlPct": 0,
+          "liquidated": false
+        },
+        {
+          "coin": "NEAR",
+          "direction": "short",
+          "leverage": 15,
+          "margin": 350,
+          "entryPrice": 1.301,
+          "notional": 5250,
+          "currentPrice": 1.302,
+          "pnl": -4.04,
+          "pnlPct": -1.2,
+          "liquidated": false
+        },
+        {
+          "coin": "FLOKI",
+          "direction": "short",
+          "leverage": 10,
+          "margin": 250,
+          "entryPrice": 0.00002945,
+          "notional": 2500,
+          "currentPrice": 0.00002949,
+          "pnl": -3.4,
+          "pnlPct": -1.4,
+          "liquidated": false
+        }
+      ]
+    },
+    "BoomerAI": {
+      "pnl": 998.92,
+      "change": -1.08,
+      "thought": "Following 24h trend: BTC long, ETH short, SOL long with moderate leverage",
+      "positions": [
+        {
+          "coin": "BTC",
+          "direction": "long",
+          "leverage": 5,
+          "margin": 400,
+          "entryPrice": 71052.4,
+          "notional": 2000,
+          "currentPrice": 71099.99,
+          "pnl": 1.34,
+          "pnlPct": 0.3,
+          "liquidated": false
+        },
+        {
+          "coin": "ETH",
+          "direction": "short",
+          "leverage": 5,
+          "margin": 350,
+          "entryPrice": 2161.41,
+          "notional": 1750,
+          "currentPrice": 2165.11,
+          "pnl": -3,
+          "pnlPct": -0.9,
+          "liquidated": false
+        },
+        {
+          "coin": "SOL",
+          "direction": "long",
+          "leverage": 3,
+          "margin": 250,
+          "entryPrice": 91.48,
+          "notional": 750,
+          "currentPrice": 91.55,
+          "pnl": 0.57,
+          "pnlPct": 0.2,
+          "liquidated": false
+        }
+      ]
+    }
+  },
+  "winner": "BoomerAI",
+  "market": {
+    "question": "Battle #16: Will DegenGPT beat BoomerAI? (BoomerAI winning)",
+    "yesPrice": 0.45,
+    "noPrice": 0.55,
+    "volume": 79166
+  },
+  "history": [
+    {
+      "battle": 6,
+      "winner": "BoomerAI",
+      "degenPnL": 958.48,
+      "boomerPnL": 1004.48,
+      "degenPos": "S A2Z 25x | L U 15x | L HBAR 10x",
+      "boomerPos": "L BTC 5x | L ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:06:30.388Z"
+    },
+    {
+      "battle": 7,
+      "winner": "DegenGPT",
+      "degenPnL": 1068.59,
+      "boomerPnL": 1007.91,
+      "degenPos": "S SAHARA 25x | L FET 15x | S PEPE 10x",
+      "boomerPos": "L BTC 5x | L ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:09:12.859Z"
+    },
+    {
+      "battle": 8,
+      "winner": "DegenGPT",
+      "degenPnL": 1011.41,
+      "boomerPnL": 1001.16,
+      "degenPos": "L XPL 25x | L WLFI 15x | L PENDLE 10x",
+      "boomerPos": "L BTC 5x | L ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:11:53.335Z"
+    },
+    {
+      "battle": 9,
+      "winner": "BoomerAI",
+      "degenPnL": 989.9,
+      "boomerPnL": 1001.11,
+      "degenPos": "L POL 25x | S PUMP 15x | L VIRTUAL 10x",
+      "boomerPos": "S BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:14:35.539Z"
+    },
+    {
+      "battle": 10,
+      "winner": "BoomerAI",
+      "degenPnL": 942.73,
+      "boomerPnL": 998.11,
+      "degenPos": "L FET 25x | L WLFI 15x | S ETHFI 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:17:18.945Z"
+    },
+    {
+      "battle": 11,
+      "winner": "DegenGPT",
+      "degenPnL": 1008.11,
+      "boomerPnL": 999.01,
+      "degenPos": "S FDUSD 25x | S OP 15x | S EIGEN 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:20:00.372Z"
+    },
+    {
+      "battle": 12,
+      "winner": "BoomerAI",
+      "degenPnL": 986.72,
+      "boomerPnL": 999.55,
+      "degenPos": "S ETHFI 25x | S XUSD 15x | S EIGEN 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:22:42.997Z"
+    },
+    {
+      "battle": 13,
+      "winner": "BoomerAI",
+      "degenPnL": 998.8,
+      "boomerPnL": 999.63,
+      "degenPos": "L EUR 25x | L BANANAS31 15x | S JST 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:25:24.387Z"
+    },
+    {
+      "battle": 14,
+      "winner": "DegenGPT",
+      "degenPnL": 1041.88,
+      "boomerPnL": 999.71,
+      "degenPos": "L KITE 25x | L AR 15x | S DEXE 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:28:05.774Z"
+    },
+    {
+      "battle": 15,
+      "winner": "DegenGPT",
+      "degenPnL": 1016.48,
+      "boomerPnL": 998.72,
+      "degenPos": "S ROBO 25x | S TRUMP 15x | L FIL 10x",
+      "boomerPos": "L BTC 5x | S ETH 5x | L SOL 3x",
+      "time": "2026-03-24T11:30:48.276Z"
+    }
+  ]
+}
